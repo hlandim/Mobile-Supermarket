@@ -2,9 +2,12 @@ package br.com.hlandim.supermarket.signin.viewmodel;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.view.View;
 
+import br.com.hlandim.supermarket.HomeActivity;
 import br.com.hlandim.supermarket.signin.model.SignIn;
+import br.com.hlandim.supermarket.signup.SignUpFragment;
 
 /**
  * Created by hlandim on 10/01/17.
@@ -38,15 +41,11 @@ public class SignInViewModel extends ContextWrapper {
     }
 
     public void onBtnSignInClicked(View v) {
-        if (mContract != null) {
-            mContract.callHomeActivity();
-        }
+
     }
 
     public void onBtnSignUpClicked(View v) {
-        if(mContract != null) {
-            mContract.callSignUpActivity();
-        }
+
 
     }
 

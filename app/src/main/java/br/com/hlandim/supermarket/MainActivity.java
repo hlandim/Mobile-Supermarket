@@ -1,56 +1,73 @@
 package br.com.hlandim.supermarket;
 
-import android.annotation.TargetApi;
-import android.content.Intent;
-import android.databinding.DataBindingUtil;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.text.method.LinkMovementMethod;
+import android.view.View;
 
-import br.com.hlandim.supermarket.databinding.ActivityMainBinding;
-import br.com.hlandim.supermarket.signin.viewmodel.SignInViewModel;
-import br.com.hlandim.supermarket.signin.viewmodel.SignInViewModelContract;
-import br.com.hlandim.supermarket.signup.SignUpActivity;
+import br.com.hlandim.supermarket.signin.SignInFragment;
+import br.com.hlandim.supermarket.signup.SignUpFragment;
+import br.com.hlandim.supermarket.util.PageAnimation;
 
-public class MainActivity extends AppCompatActivity implements SignInViewModelContract {
+public class MainActivity extends AppCompatActivity {
 
-
-    // UI references.
-    private ActivityMainBinding mActivitySignInBinding;
+    private static final String TAG_FRAGMENT = "my_fragment_tag";
+    private SignUpFragment mSignUpFragment;
+    private SignInFragment mSignInFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Set up the login form.
-        mActivitySignInBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        mActivitySignInBinding.emailSignUpButton.setMovementMethod(LinkMovementMethod.getInstance());
-        SignInViewModel loginViewModel = new SignInViewModel(this, this);
-        mActivitySignInBinding.setUser(loginViewModel);
+        setContentView(R.layout.activity_main);
+
+        mSignInFragment = new SignInFragment();
+        mSignUpFragment = new SignUpFragment();
+
+        setInitialFragment(savedInstanceState);
 
     }
 
+    private void setInitialFragment(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            changeFragment(mSignInFragment, null);
+        } else {
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
+            changeFragment(fragment, null);
+        }
+    }
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
+    public void goToSignUp(View v) {
+        changeFragment(mSignUpFragment, PageAnimation.SLIDE_RIGHT_TO_LEFT);
+    }
 
+    public void goToSignIn(View v) {
+        changeFragment(mSignInFragment, PageAnimation.SLIDE_LEFT_TO_RIGHT);
+    }
+
+    private void changeFragment(Fragment fragment, PageAnimation pageAnimation) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+        //Configure animation
+        if (pageAnimation != null) {
+            int enter = pageAnimation.getInTransition();
+            int exit = pageAnimation.getOutTransition();
+            if (enter > 0 && exit > 0) {
+                fragmentTransaction.setCustomAnimations(enter, exit);
+            }
+        }
+
+        fragmentTransaction.replace(R.id.container_fragment, fragment, TAG_FRAGMENT).commit();
     }
 
     @Override
-    public void callSignUpActivity() {
-        Intent intent = new Intent(getBaseContext(), SignUpActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void callHomeActivity() {
-        Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-        startActivity(intent);
+    public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
+        if (fragment != null && fragment instanceof SignUpFragment) {
+            goToSignIn(null);
+        } else {
+            super.onBackPressed();
+        }
     }
 }
 

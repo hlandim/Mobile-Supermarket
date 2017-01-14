@@ -70,9 +70,7 @@ public class SignUpViewModel extends ContextWrapper {
     }
 
     public void onBtnSignInClicked(View v) {
-        if (mContract != null) {
-            mContract.callLoginScreen();
-        }
+
     }
 
     public void onBtnCreateClicked(View v) {
@@ -100,7 +98,7 @@ public class SignUpViewModel extends ContextWrapper {
                         public final void onNext(CreateResponse createResponse) {
                             if (createResponse.isSuccess()) {
                                 Log.i(TAG, "User created with success");
-                                mContract.callHomeScreen();
+//                                mContract.callHomeScreen();
                             } else {
                                 mContract.onCreateError(createResponse.getErrors());
                             }

@@ -5,7 +5,4 @@ package br.com.hlandim.supermarket.signin.viewmodel;
  */
 
 public interface SignInViewModelContract {
-    void showProgress(boolean show);
-    void callSignUpActivity();
-    void callHomeActivity();
 }
