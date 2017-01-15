@@ -34,7 +34,6 @@ public class SignInFragment extends Fragment implements SignInViewModelListener 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         FragmentSignInBinding mFragmentSignInBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_sign_in, container, false);
         configureFieldValidations(mFragmentSignInBinding);
-        mFragmentSignInBinding.emailSignUpButton.setMovementMethod(LinkMovementMethod.getInstance());
         if( mLoginViewModel == null) {
             mLoginViewModel = new SignInViewModel(getActivity(), this);
         } else {

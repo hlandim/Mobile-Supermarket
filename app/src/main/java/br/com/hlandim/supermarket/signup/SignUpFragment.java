@@ -44,9 +44,9 @@ public class SignUpFragment extends Fragment implements SignUpViewModelListener 
     private void configureFieldValidations(FragmentSignUpBinding fragmentSignUpBinding) {
         mAwesomeValidation = new AwesomeValidation(TEXT_INPUT_LAYOUT);
         mAwesomeValidation.addValidation(fragmentSignUpBinding.tilEmail, android.util.Patterns.EMAIL_ADDRESS, getString(R.string.invalid_email));
-        mAwesomeValidation.addValidation(fragmentSignUpBinding.tilPassword, Range.atLeast(6), getString(R.string.password_size));
-        mAwesomeValidation.addValidation(fragmentSignUpBinding.tilConfirmPassword, Range.atLeast(6), getString(R.string.password_size));
-        mAwesomeValidation.addValidation(fragmentSignUpBinding.tilName, Range.atLeast(1), getString(R.string.required_field));
+        mAwesomeValidation.addValidation(fragmentSignUpBinding.tilPassword, "\\w{6,}", getString(R.string.password_size));
+        mAwesomeValidation.addValidation(fragmentSignUpBinding.tilConfirmPassword, "\\w{6,}", getString(R.string.password_size));
+        mAwesomeValidation.addValidation(fragmentSignUpBinding.tilName, "\\w{6,}", getString(R.string.required_field));
     }
 
 

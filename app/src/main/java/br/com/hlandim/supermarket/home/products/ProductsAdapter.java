@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import br.com.hlandim.supermarket.home.products.viewmodel.ProductsItemViewModel;
 public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ProductHolder> {
 
     private List<ProductResponse> mProductList;
+    private ProductsListListener mListListener;
 
     public ProductsAdapter(List<ProductResponse> mProductList) {
         this.mProductList = mProductList;
@@ -44,17 +46,35 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         return mProductList.size();
     }
 
+    public void setListListener(ProductsListListener listListener) {
+        this.mListListener = listListener;
+    }
+
+    public interface ProductsListListener {
+        void onProductClicked(ProductResponse product, ImageView sharedImg);
+    }
+
     class ProductHolder extends RecyclerView.ViewHolder {
 
-        private ProductListRowBinding binding;
+        private ProductListRowBinding mBinding;
 
         ProductHolder(View itemView) {
             super(itemView);
-            binding = DataBindingUtil.bind(itemView);
+            mBinding = DataBindingUtil.bind(itemView);
+            mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mListListener != null) {
+                        int position = getLayoutPosition();
+                        ProductResponse productResponse = mProductList.get(position);
+                        mListListener.onProductClicked(productResponse, mBinding.productImage);
+                    }
+                }
+            });
         }
 
         public ProductListRowBinding getBinding() {
-            return binding;
+            return mBinding;
         }
     }
 }

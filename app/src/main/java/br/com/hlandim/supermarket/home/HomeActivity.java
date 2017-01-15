@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import br.com.hlandim.supermarket.R;
-import br.com.hlandim.supermarket.home.products.PruductsFragment;
+import br.com.hlandim.supermarket.home.products.ProductDetailsFragment;
+import br.com.hlandim.supermarket.home.products.ProductsFragment;
 import br.com.hlandim.supermarket.util.PageAnimation;
 
 public class HomeActivity extends AppCompatActivity {
@@ -18,9 +20,17 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        changeFragment(new PruductsFragment(), null);
+        changeFragment(new ProductsFragment(), null);
     }
 
+
+    public void showProducDetails(View sharedElement, String transitionName) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.addSharedElement(sharedElement, transitionName)
+                .replace(R.id.container_details_fragment, new ProductDetailsFragment())
+                .addToBackStack(null)
+                .commit();
+    }
 
     private void changeFragment(Fragment fragment, PageAnimation pageAnimation) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

@@ -37,4 +37,8 @@ public class ProductsItemViewModel {
     public String getTitle() {
         return productResponse.getTitle();
     }
+
+    public String getPrice() {
+        return "$" + productResponse.getPrice();
+    }
 }
