@@ -27,6 +27,7 @@ import static com.basgeekball.awesomevalidation.ValidationStyle.TEXT_INPUT_LAYOU
 public class SignInFragment extends Fragment implements SignInViewModelListener {
 
     private AwesomeValidation mAwesomeValidation;
+    private SignInViewModel mLoginViewModel;
 
     @Nullable
     @Override
@@ -34,17 +35,21 @@ public class SignInFragment extends Fragment implements SignInViewModelListener 
         FragmentSignInBinding mFragmentSignInBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_sign_in, container, false);
         configureFieldValidations(mFragmentSignInBinding);
         mFragmentSignInBinding.emailSignUpButton.setMovementMethod(LinkMovementMethod.getInstance());
-        SignInViewModel loginViewModel = new SignInViewModel(getActivity(), this);
-        mFragmentSignInBinding.setViewModel(loginViewModel);
+        if( mLoginViewModel == null) {
+            mLoginViewModel = new SignInViewModel(getActivity(), this);
+        } else {
+            mLoginViewModel.setListener(this);
+        }
+        mFragmentSignInBinding.setViewModel(mLoginViewModel);
 
-
+        setRetainInstance(true);
         return mFragmentSignInBinding.getRoot();
     }
 
     private void configureFieldValidations(FragmentSignInBinding mFragmentSignInBinding) {
         mAwesomeValidation = new AwesomeValidation(TEXT_INPUT_LAYOUT);
         mAwesomeValidation.addValidation(mFragmentSignInBinding.tilEmail, android.util.Patterns.EMAIL_ADDRESS, getString(R.string.invalid_email));
-        mAwesomeValidation.addValidation(mFragmentSignInBinding.tilPassword, Range.atLeast(6), getString(R.string.password_size));
+        mAwesomeValidation.addValidation(mFragmentSignInBinding.tilPassword, "\\w{6,}", getString(R.string.password_size));
     }
 
     @Override

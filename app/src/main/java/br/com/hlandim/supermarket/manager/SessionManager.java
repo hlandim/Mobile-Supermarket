@@ -1,9 +1,15 @@
 package br.com.hlandim.supermarket.manager;
 
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.hlandim.supermarket.R;
 import br.com.hlandim.supermarket.config.Endpoint;
 import br.com.hlandim.supermarket.data.service.SessionService;
 import br.com.hlandim.supermarket.data.service.response.CreateResponse;
@@ -19,28 +25,38 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by hlandim on 14/01/17.
- * This class is responsable to manager the user session
+ * This class is responsible to create and manage the user session
  */
 
-public class SessionManager {
+public class SessionManager extends ContextWrapper {
 
-    private static SessionManager instance;
+    private static final String SHARED_PREFERENCES_TOKEN_KEY = "auth_token";
+    private static final String SHARED_PREFERENCES_EMAIL_KEY = "auth_email";
+    private static final String SHARED_PREFERENCES_PASSWORD_KEY = "auth_password";
+    private static final String STATUS_WITHOUT_CREDENTIAIS = "without_credentiais";
     private SessionService service;
     private String mToken;
+    private SharedPreferences sharedPreferences;
 
-    private SessionManager() {
+    public SessionManager(Context base) {
+        super(base);
         service = ServerUtil.getService(SessionService.class, Endpoint.SERVER_AUTH);
+        sharedPreferences = base.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
     }
 
-    public static SessionManager getInstance() {
-        if (instance == null) {
-            instance = new SessionManager();
+    public void signInWithSavedCrendentiais(SignInCallback signInCallback) {
+        String email = sharedPreferences.getString(SHARED_PREFERENCES_EMAIL_KEY, null);
+        String password = sharedPreferences.getString(SHARED_PREFERENCES_PASSWORD_KEY, null);
+        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
+            SignIn signIn = new SignIn(email, password);
+            signIn(signIn, signInCallback);
+        } else {
+            signInCallback.onSignInResponse(STATUS_WITHOUT_CREDENTIAIS);
         }
-
-        return instance;
     }
 
-    public void signIn(SignIn signIn, final SignInCallback signInCallback) {
+    public void signIn(final SignIn signIn, final SignInCallback signInCallback) {
         if (signInCallback != null) {
             service.signIn(signIn.getEmail(), signIn.getPassword(), signIn.getGrantType())
                     .subscribeOn(Schedulers.newThread())
@@ -49,6 +65,7 @@ public class SessionManager {
                         @Override
                         public void call(SignInResponse signInResponse) {
                             setToken(signInResponse.getAccessToken());
+                            saveUserCredentiais(signIn.getEmail(), signIn.getPassword());
                             signInCallback.onSignInResponse(signInResponse.getError());
                         }
                     }, new Action1<Throwable>() {
@@ -97,7 +114,15 @@ public class SessionManager {
     }
 
     private void setToken(String token) {
+        sharedPreferences.edit().putString(SHARED_PREFERENCES_TOKEN_KEY, token).apply();
         this.mToken = token;
+    }
+
+    private void saveUserCredentiais(String email, String password) {
+        sharedPreferences.edit()
+                .putString(SHARED_PREFERENCES_EMAIL_KEY, email)
+                .putString(SHARED_PREFERENCES_PASSWORD_KEY, password)
+                .apply();
     }
 
     public String getmToken() {

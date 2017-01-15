@@ -1,10 +1,8 @@
 package br.com.hlandim.supermarket;
 
 import android.app.Application;
-import android.content.Context;
 
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
+import br.com.hlandim.supermarket.manager.SessionManager;
 
 /**
  * Created by hlandim on 12/01/17.
@@ -12,21 +10,15 @@ import rx.schedulers.Schedulers;
 
 public class SuperMarketApplication extends Application {
 
-    private Scheduler mScheduler;
+    private SessionManager mSessionManager;
 
-
-    private static SuperMarketApplication get(Context context) {
-        return (SuperMarketApplication) context.getApplicationContext();
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mSessionManager = new SessionManager(this);
     }
 
-    public static SuperMarketApplication create(Context context) {
-        return SuperMarketApplication.get(context);
-    }
-
-    public Scheduler getmScheduler() {
-        if (mScheduler == null) {
-            mScheduler = Schedulers.io();
-        }
-        return mScheduler;
+    public SessionManager getSessionManager() {
+        return mSessionManager;
     }
 }

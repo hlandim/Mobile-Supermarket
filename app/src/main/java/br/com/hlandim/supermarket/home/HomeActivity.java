@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import br.com.hlandim.supermarket.R;
+import br.com.hlandim.supermarket.home.products.PruductsFragment;
 import br.com.hlandim.supermarket.util.PageAnimation;
 
 public class HomeActivity extends AppCompatActivity {
@@ -16,6 +17,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        changeFragment(new PruductsFragment(), null);
     }
 
 
@@ -31,6 +34,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
-        fragmentTransaction.replace(R.id.container_fragment, fragment, TAG_FRAGMENT).commit();
+        fragmentTransaction.replace(R.id.container_home_fragment, fragment, TAG_FRAGMENT).commit();
     }
 }

@@ -24,4 +24,7 @@
     <string name="password_size">a Senha precisa ter ao menos 6 dígitos</string>
     <string name="password_do_not_match">As senhas precisam ser iguais</string>
 
+    <string name="preference_file_key">my_preference</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
 </resources>

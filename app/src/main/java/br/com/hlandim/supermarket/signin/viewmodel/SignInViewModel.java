@@ -1,11 +1,12 @@
 package br.com.hlandim.supermarket.signin.viewmodel;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 
+import br.com.hlandim.supermarket.SuperMarketApplication;
 import br.com.hlandim.supermarket.home.HomeActivity;
 import br.com.hlandim.supermarket.manager.SessionManager;
 import br.com.hlandim.supermarket.signin.model.SignIn;
@@ -18,13 +19,14 @@ import br.com.hlandim.supermarket.util.Util;
 public class SignInViewModel extends ContextWrapper {
 
     private SignIn mSignIn;
-    private SignInViewModelListener mContract;
+    private SignInViewModelListener mListener;
+    private SessionManager mSessionManager;
 
-    public SignInViewModel(Context base, SignInViewModelListener signInViewModelListener) {
+    public SignInViewModel(Activity base, SignInViewModelListener signInViewModelListener) {
         super(base);
-        this.mContract = signInViewModelListener;
+        this.mListener = signInViewModelListener;
         this.mSignIn = new SignIn();
-
+        mSessionManager = ((SuperMarketApplication) base.getApplication()).getSessionManager();
 
     }
 
@@ -45,10 +47,11 @@ public class SignInViewModel extends ContextWrapper {
     }
 
     public void onBtnSignInClicked(View v) {
-        if (mContract != null) {
-            if (mContract.validateFields()) {
-                mContract.showProgress(true);
-                SessionManager.getInstance().signIn(mSignIn, new SessionManager.SignInCallback() {
+        if (mListener != null) {
+            if (mListener.validateFields()) {
+                Util.hideKeyboard((Activity) getBaseContext());
+                mListener.showProgress(true);
+                mSessionManager.signIn(mSignIn, new SessionManager.SignInCallback() {
                     @Override
                     public void onSignInResponse(String error) {
                         if (TextUtils.isEmpty(error)) {
@@ -56,7 +59,7 @@ public class SignInViewModel extends ContextWrapper {
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         } else {
-                            mContract.showProgress(false);
+                            mListener.showProgress(false);
                             Util.getGeneralErrorDialog(getBaseContext(), error).show();
                         }
                     }
@@ -65,10 +68,7 @@ public class SignInViewModel extends ContextWrapper {
         }
     }
 
-    public void onBtnSignUpClicked(View v) {
-
-
+    public void setListener(SignInViewModelListener listener) {
+        this.mListener = listener;
     }
-
-
 }

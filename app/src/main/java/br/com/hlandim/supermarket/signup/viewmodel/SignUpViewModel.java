@@ -8,6 +8,7 @@ import android.view.View;
 
 import java.util.List;
 
+import br.com.hlandim.supermarket.SuperMarketApplication;
 import br.com.hlandim.supermarket.data.service.response.Error;
 import br.com.hlandim.supermarket.home.HomeActivity;
 import br.com.hlandim.supermarket.manager.SessionManager;
@@ -24,12 +25,14 @@ public class SignUpViewModel extends ContextWrapper {
     private static final String TAG = SignUpViewModel.class.getSimpleName();
     private SignUp mSignUp;
     private SignUpViewModelListener mContract;
+    private SessionManager mSessionManager;
 
 
     public SignUpViewModel(Activity base, SignUpViewModelListener contract) {
         super(base);
         mSignUp = new SignUp();
         this.mContract = contract;
+        mSessionManager = ((SuperMarketApplication) base.getApplication()).getSessionManager();
     }
 
     public String getEmail() {
@@ -67,7 +70,7 @@ public class SignUpViewModel extends ContextWrapper {
     private void signIn(String email, String password) {
         if (mContract != null && mContract.validateFields()) {
             SignIn signIn = new SignIn(email, password);
-            SessionManager.getInstance().signIn(signIn, new SessionManager.SignInCallback() {
+            mSessionManager.signIn(signIn, new SessionManager.SignInCallback() {
                 @Override
                 public void onSignInResponse(String error) {
                     if (TextUtils.isEmpty(error)) {
@@ -87,7 +90,7 @@ public class SignUpViewModel extends ContextWrapper {
         if (mContract != null && mContract.validateFields()) {
             Util.hideKeyboard((Activity) getBaseContext());
             mContract.showProgress(true);
-            SessionManager.getInstance().create(mSignUp, new SessionManager.SignUpCallback() {
+            mSessionManager.create(mSignUp, new SessionManager.SignUpCallback() {
                 @Override
                 public void onSignUpResponse(List<Error> errors) {
                     if (errors == null) {

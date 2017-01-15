@@ -33,4 +33,8 @@ public class ProductsItemViewModel {
     public String getImageName() {
         return productResponse.getFilename();
     }
+
+    public String getTitle() {
+        return productResponse.getTitle();
+    }
 }
