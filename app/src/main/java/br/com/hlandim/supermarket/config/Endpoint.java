@@ -6,7 +6,10 @@ package br.com.hlandim.supermarket.config;
 
 public class Endpoint {
 
-    // AUTH
     public static final String SERVER_AUTH = "http://auth.mobilesupermarket.wedeploy.io/";
+    public static final String SERVER_DATA = "http://data.mobilesupermarket.wedeploy.io/";
+
+    private static final String SERVER_ASSETS = "http://public.mobilesupermarket.wedeploy.io/assets/";
+    public static final String SERVER_ASSETS_IMAGES = SERVER_ASSETS + "images/";
 
 }

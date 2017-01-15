@@ -1,23 +1,19 @@
 package br.com.hlandim.supermarket.signup.viewmodel;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.ContextWrapper;
-import android.util.Log;
+import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import br.com.hlandim.supermarket.SuperMarketApplication;
-import br.com.hlandim.supermarket.config.Endpoint;
-import br.com.hlandim.supermarket.config.ServerUtil;
-import br.com.hlandim.supermarket.service.SessionService;
-import br.com.hlandim.supermarket.service.response.CreateResponse;
-import br.com.hlandim.supermarket.service.response.Error;
+import br.com.hlandim.supermarket.data.service.response.Error;
+import br.com.hlandim.supermarket.home.HomeActivity;
+import br.com.hlandim.supermarket.manager.SessionManager;
+import br.com.hlandim.supermarket.signin.model.SignIn;
 import br.com.hlandim.supermarket.signup.model.SignUp;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import br.com.hlandim.supermarket.util.Util;
 
 /**
  * Created by hlandim on 11/01/17.
@@ -27,14 +23,13 @@ public class SignUpViewModel extends ContextWrapper {
 
     private static final String TAG = SignUpViewModel.class.getSimpleName();
     private SignUp mSignUp;
-    private SignUpViewModelContract mContract;
-    private SessionService service;
+    private SignUpViewModelListener mContract;
 
-    public SignUpViewModel(Context base, SignUpViewModelContract contract) {
+
+    public SignUpViewModel(Activity base, SignUpViewModelListener contract) {
         super(base);
         mSignUp = new SignUp();
         this.mContract = contract;
-        service = ServerUtil.getService(SessionService.class, Endpoint.SERVER_AUTH);
     }
 
     public String getEmail() {
@@ -69,41 +64,40 @@ public class SignUpViewModel extends ContextWrapper {
         mSignUp.setName(name);
     }
 
-    public void onBtnSignInClicked(View v) {
-
+    private void signIn(String email, String password) {
+        if (mContract != null && mContract.validateFields()) {
+            SignIn signIn = new SignIn(email, password);
+            SessionManager.getInstance().signIn(signIn, new SessionManager.SignInCallback() {
+                @Override
+                public void onSignInResponse(String error) {
+                    if (TextUtils.isEmpty(error)) {
+                        Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    } else {
+                        mContract.showProgress(false);
+                        Util.getGeneralErrorDialog(getBaseContext(), error).show();
+                    }
+                }
+            });
+        }
     }
 
     public void onBtnCreateClicked(View v) {
-
         if (mContract != null && mContract.validateFields()) {
-            SuperMarketApplication application = SuperMarketApplication.create(this);
-            service.createUser(mSignUp)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<CreateResponse>() {
-                        @Override
-                        public final void onCompleted() {
-                            Log.i(TAG, "onCompleted");
-                        }
-
-                        @Override
-                        public final void onError(Throwable e) {
-                            Error error = new Error("", e.getMessage());
-                            List<Error> errors = new ArrayList<>();
-                            errors.add(error);
-                            mContract.onCreateError(errors);
-                        }
-
-                        @Override
-                        public final void onNext(CreateResponse createResponse) {
-                            if (createResponse.isSuccess()) {
-                                Log.i(TAG, "User created with success");
-//                                mContract.callHomeScreen();
-                            } else {
-                                mContract.onCreateError(createResponse.getErrors());
-                            }
-                        }
-                    });
+            Util.hideKeyboard((Activity) getBaseContext());
+            mContract.showProgress(true);
+            SessionManager.getInstance().create(mSignUp, new SessionManager.SignUpCallback() {
+                @Override
+                public void onSignUpResponse(List<Error> errors) {
+                    if (errors == null) {
+                        signIn(mSignUp.getEmail(), mSignUp.getPassword());
+                    } else {
+                        mContract.showProgress(false);
+                        mContract.onCreate(errors);
+                    }
+                }
+            });
         }
     }
 }

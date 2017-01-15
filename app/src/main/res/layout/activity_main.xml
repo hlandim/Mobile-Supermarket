@@ -6,14 +6,24 @@
     android:background="@color/auth_bg_color"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin"
+
     tools:context="br.com.hlandim.supermarket.MainActivity">
 
-    <LinearLayout
-        android:id="@+id/container_fragment"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:layout_height="match_parent">
 
+        <LinearLayout
+            android:id="@+id/container_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_horizontal_margin" />
+
+        <include layout="@layout/loading_overlay"
+            android:visibility="gone"
+            android:id="@+id/container_loading"/>
+    </RelativeLayout>
 
 </LinearLayout>

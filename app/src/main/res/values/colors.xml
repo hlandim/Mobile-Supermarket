@@ -6,4 +6,6 @@
     <color name="colorAccent">#795548</color>
 
     <color name="auth_bg_color">#082947</color>
+
+    <color name="bg_overlay">#7f000000</color>
 </resources>

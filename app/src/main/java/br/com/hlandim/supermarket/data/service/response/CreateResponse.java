@@ -1,4 +1,4 @@
-package br.com.hlandim.supermarket.service.response;
+package br.com.hlandim.supermarket.data.service.response;
 
 import java.util.List;
 

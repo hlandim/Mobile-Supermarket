@@ -1,5 +1,6 @@
-package br.com.hlandim.supermarket.config;
+package br.com.hlandim.supermarket.util;
 
+import br.com.hlandim.supermarket.exception.RxErrorHandlingCallAdapterFactory;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -14,7 +15,7 @@ public class ServerUtil {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create())
                 .build();
         return retrofit.create(serviceClass);
     }
