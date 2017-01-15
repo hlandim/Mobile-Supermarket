@@ -30,7 +30,7 @@ public class ProductsItemViewModel {
                 .into(view);
     }
 
-    public String getImageName(){
+    public String getImageName() {
         return productResponse.getFilename();
     }
 }

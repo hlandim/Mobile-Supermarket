@@ -10,6 +10,8 @@ import br.com.hlandim.supermarket.data.service.response.Error;
 
 public interface SignUpViewModelListener {
     void showProgress(boolean show);
+
     boolean validateFields();
+
     void onCreate(List<Error> errors);
 }

@@ -2,7 +2,6 @@ package br.com.hlandim.supermarket.util;
 
 import br.com.hlandim.supermarket.exception.RxErrorHandlingCallAdapterFactory;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**

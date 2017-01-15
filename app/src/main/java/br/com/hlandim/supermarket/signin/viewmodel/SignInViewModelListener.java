@@ -6,5 +6,6 @@ package br.com.hlandim.supermarket.signin.viewmodel;
 
 public interface SignInViewModelListener {
     void showProgress(boolean show);
+
     boolean validateFields();
 }

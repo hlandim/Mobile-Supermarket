@@ -1,7 +1,5 @@
 package br.com.hlandim.supermarket.signin.model;
 
-import retrofit2.http.Field;
-
 /**
  * Created by hlandim on 10/01/17.
  */
