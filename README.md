@@ -5,7 +5,7 @@
 * Use [Android Databinding][3] to bind view model and Android
 * Asynchronous communications implemented with [Rx][4].
 * Rest API from [Retrofit 2][5]
-* Use [Picasso] to load images.
+* Use [Picasso][5] to load images.
 
 TODO LIST
 ---------
