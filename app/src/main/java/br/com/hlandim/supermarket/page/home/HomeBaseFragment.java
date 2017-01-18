@@ -8,11 +8,11 @@ import android.support.v4.app.Fragment;
 
 public class HomeBaseFragment extends Fragment {
 
-    protected void showProgress(boolean show, String text) {
+    public void showProgress(boolean show, String text) {
         ((HomeActivity) getActivity()).showLoadingOverlay(show, text);
     }
 
-    protected void showProgress(boolean show) {
+    public void showProgress(boolean show) {
         ((HomeActivity) getActivity()).showLoadingOverlay(show);
     }
 }
