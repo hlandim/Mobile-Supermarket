@@ -44,7 +44,7 @@ public class SignUpFragment extends MainBaseFragment implements SignUpViewModelL
         mAwesomeValidation.addValidation(fragmentSignUpBinding.tilEmail, android.util.Patterns.EMAIL_ADDRESS, getString(R.string.invalid_email));
         mAwesomeValidation.addValidation(fragmentSignUpBinding.tilPassword, "\\w{6,}", getString(R.string.password_size));
         mAwesomeValidation.addValidation(fragmentSignUpBinding.tilConfirmPassword, "\\w{6,}", getString(R.string.password_size));
-        mAwesomeValidation.addValidation(fragmentSignUpBinding.tilName, "\\w{6,}", getString(R.string.required_field));
+        mAwesomeValidation.addValidation(fragmentSignUpBinding.tilName, "\\w{1,}", getString(R.string.required_field));
     }
 
 
