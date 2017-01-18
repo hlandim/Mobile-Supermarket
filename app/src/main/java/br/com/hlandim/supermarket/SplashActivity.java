@@ -12,8 +12,8 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.nineoldandroids.animation.Animator;
 
-import br.com.hlandim.supermarket.home.HomeActivity;
 import br.com.hlandim.supermarket.manager.SessionManager;
+import br.com.hlandim.supermarket.page.home.HomeActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -30,9 +30,9 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                verifyCredetiais();
+                verifyCredentials();
             }
-        },1000);
+        }, 1000);
 
 
     }
@@ -62,9 +62,9 @@ public class SplashActivity extends AppCompatActivity {
         }).delay(100).duration(1000).playOn(imageView);
     }
 
-    private void verifyCredetiais() {
-        SessionManager sessionManager = ((SuperMarketApplication) getApplication()).getSessionManager();
-        sessionManager.signInWithSavedCrendentiais(new SessionManager.SignInCallback() {
+    private void verifyCredentials() {
+        SessionManager sessionManager = SessionManager.getInstance(this);
+        sessionManager.signInWithSavedCrendentials(new SessionManager.SignInCallback() {
             @Override
             public void onSignInResponse(String error) {
 

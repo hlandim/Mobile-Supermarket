@@ -6,4 +6,10 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <!-- Preview (grid item) dimensions -->
+    <dimen name="product_image_preview_size">120dp</dimen>
+
+    <!-- Details dimensions -->
+    <dimen name="product_details_image_size">240dp</dimen>
 </resources>

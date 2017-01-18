@@ -5,14 +5,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
-
-import br.com.hlandim.supermarket.signin.SignInFragment;
-import br.com.hlandim.supermarket.signup.SignUpFragment;
+import br.com.hlandim.supermarket.page.main.signin.SignInFragment;
+import br.com.hlandim.supermarket.page.main.signup.SignUpFragment;
+import br.com.hlandim.supermarket.util.LoadingAnimation;
 import br.com.hlandim.supermarket.util.PageAnimation;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,10 +17,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_FRAGMENT = "my_fragment_tag";
     private SignUpFragment mSignUpFragment;
     private SignInFragment mSignInFragment;
+    private LoadingAnimation mLoadingAnimation;
+    private TextView mTvLoading;
 
-    private LinearLayout mLoadingOverlay;
-    private YoYo.YoYoString mLoadingAnimation;
-    private ImageView mImgLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +31,11 @@ public class MainActivity extends AppCompatActivity {
 
         setInitialFragment(savedInstanceState);
 
-        configureLoadingAnimation();
+        mLoadingAnimation = new LoadingAnimation(findViewById(R.id.container_loading));
+        mTvLoading = (TextView) findViewById(R.id.tv_loading);
 
     }
 
-    private void configureLoadingAnimation() {
-        mLoadingOverlay = (LinearLayout) findViewById(R.id.container_loading);
-        mImgLoading = (ImageView) mLoadingOverlay.findViewById(R.id.img_loading);
-    }
 
     private void setInitialFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
@@ -87,14 +80,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showLoadingOverlay(boolean show) {
-        if (show) {
-            if (mLoadingAnimation != null) {
-                mLoadingAnimation.stop(false);
-            }
-        } else {
-            mLoadingAnimation = YoYo.with(Techniques.Pulse).playOn(mImgLoading);
-        }
-        mLoadingOverlay.setVisibility(show ? View.VISIBLE : View.GONE);
+        showLoadingOverlay(show, null);
+    }
+
+    public void showLoadingOverlay(boolean show, String text) {
+        mTvLoading.setText(text);
+        mLoadingAnimation.showLoadingOverlay(show);
     }
 }
 

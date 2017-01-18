@@ -6,6 +6,7 @@ package br.com.hlandim.supermarket.config;
 
 public class Endpoint {
 
+    public static final String SUFIX_KEY_AUTH = "Bearer ";
     public static final String SERVER_AUTH = "http://auth.mobilesupermarket.wedeploy.io/";
     public static final String SERVER_DATA = "http://data.mobilesupermarket.wedeploy.io/";
 

@@ -1,7 +1,9 @@
 package br.com.hlandim.supermarket.manager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
@@ -16,8 +18,10 @@ import br.com.hlandim.supermarket.data.service.response.CreateResponse;
 import br.com.hlandim.supermarket.data.service.response.Error;
 import br.com.hlandim.supermarket.data.service.response.SignInResponse;
 import br.com.hlandim.supermarket.exception.RetrofitException;
-import br.com.hlandim.supermarket.signin.model.SignIn;
-import br.com.hlandim.supermarket.signup.model.SignUp;
+import br.com.hlandim.supermarket.page.main.signin.model.SignIn;
+import br.com.hlandim.supermarket.page.main.signup.model.SignUp;
+import br.com.hlandim.supermarket.util.JWTUtils;
+import br.com.hlandim.supermarket.util.JwtToken;
 import br.com.hlandim.supermarket.util.ServerUtil;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -34,20 +38,29 @@ public class SessionManager extends ContextWrapper {
     private static final String SHARED_PREFERENCES_EMAIL_KEY = "auth_email";
     private static final String SHARED_PREFERENCES_PASSWORD_KEY = "auth_password";
     private static final String STATUS_WITHOUT_CREDENTIAIS = "without_credentiais";
-    private SessionService service;
+    private static SessionManager instance;
+    private SessionService mService;
     private String mToken;
-    private SharedPreferences sharedPreferences;
+    private JwtToken mJwtToken;
+    private SharedPreferences mSharedPreferences;
 
-    public SessionManager(Context base) {
+    private SessionManager(Context base) {
         super(base);
-        service = ServerUtil.getService(SessionService.class, Endpoint.SERVER_AUTH);
-        sharedPreferences = base.getSharedPreferences(
+        mService = ServerUtil.getService(SessionService.class, Endpoint.SERVER_AUTH);
+        mSharedPreferences = base.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
     }
 
-    public void signInWithSavedCrendentiais(SignInCallback signInCallback) {
-        String email = sharedPreferences.getString(SHARED_PREFERENCES_EMAIL_KEY, null);
-        String password = sharedPreferences.getString(SHARED_PREFERENCES_PASSWORD_KEY, null);
+    public static SessionManager getInstance(Activity base) {
+        if (instance == null) {
+            instance = new SessionManager(base);
+        }
+        return instance;
+    }
+
+    public void signInWithSavedCrendentials(SignInCallback signInCallback) {
+        String email = mSharedPreferences.getString(SHARED_PREFERENCES_EMAIL_KEY, null);
+        String password = mSharedPreferences.getString(SHARED_PREFERENCES_PASSWORD_KEY, null);
         if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
             SignIn signIn = new SignIn(email, password);
             signIn(signIn, signInCallback);
@@ -58,15 +71,21 @@ public class SessionManager extends ContextWrapper {
 
     public void signIn(final SignIn signIn, final SignInCallback signInCallback) {
         if (signInCallback != null) {
-            service.signIn(signIn.getEmail(), signIn.getPassword(), signIn.getGrantType())
+            mService.signIn(signIn.getEmail(), signIn.getPassword(), signIn.getGrantType())
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<SignInResponse>() {
                         @Override
                         public void call(SignInResponse signInResponse) {
-                            setToken(signInResponse.getAccessToken());
-                            saveUserCredentiais(signIn.getEmail(), signIn.getPassword());
-                            signInCallback.onSignInResponse(signInResponse.getError());
+                            try {
+                                setToken(signInResponse.getAccessToken());
+                                saveUserCredentiais(signIn.getEmail(), signIn.getPassword());
+                                signInCallback.onSignInResponse(signInResponse.getError());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                signInCallback.onSignInResponse(e.getMessage());
+                            }
+
                         }
                     }, new Action1<Throwable>() {
                         @Override
@@ -84,9 +103,13 @@ public class SessionManager extends ContextWrapper {
         }
     }
 
+    public void logout() {
+        mSharedPreferences.edit().clear().apply();
+    }
+
     public void create(SignUp signUp, final SignUpCallback signUpCallback) {
         if (signUpCallback != null) {
-            service.createUser(signUp)
+            mService.createUser(signUp)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<CreateResponse>() {
@@ -113,20 +136,25 @@ public class SessionManager extends ContextWrapper {
         }
     }
 
-    private void setToken(String token) {
-        sharedPreferences.edit().putString(SHARED_PREFERENCES_TOKEN_KEY, token).apply();
-        this.mToken = token;
-    }
-
     private void saveUserCredentiais(String email, String password) {
-        sharedPreferences.edit()
+        mSharedPreferences.edit()
                 .putString(SHARED_PREFERENCES_EMAIL_KEY, email)
                 .putString(SHARED_PREFERENCES_PASSWORD_KEY, password)
                 .apply();
     }
 
-    public String getmToken() {
+    public String getToken() {
         return mToken;
+    }
+
+    private void setToken(String token) throws Exception {
+        mSharedPreferences.edit().putString(SHARED_PREFERENCES_TOKEN_KEY, token).apply();
+        this.mToken = token;
+        this.mJwtToken = JWTUtils.decoded(mToken);
+    }
+
+    public JwtToken getJwtToken() {
+        return mJwtToken;
     }
 
     public interface SignInCallback {
@@ -136,4 +164,6 @@ public class SessionManager extends ContextWrapper {
     public interface SignUpCallback {
         void onSignUpResponse(List<Error> errors);
     }
+
+
 }

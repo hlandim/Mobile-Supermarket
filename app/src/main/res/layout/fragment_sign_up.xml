@@ -5,13 +5,14 @@
 
         <variable
             name="signUp"
-            type="br.com.hlandim.supermarket.signup.viewmodel.SignUpViewModel" />
+            type="br.com.hlandim.supermarket.page.main.signup.viewmodel.SignUpViewModel" />
     </data>
 
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="@dimen/activity_horizontal_margin"
         android:background="@android:color/transparent">
 
         <ScrollView

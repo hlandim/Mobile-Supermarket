@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
         <variable
             name="productsViewModel"
-            type="br.com.hlandim.supermarket.home.products.viewmodel.ProductsViewModel" />
+            type="br.com.hlandim.supermarket.page.home.products.viewmodel.ProductsViewModel" />
     </data>
 
     <RelativeLayout
@@ -23,15 +22,20 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_products"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
+
+        <com.andremion.counterfab.CounterFab
+            android:id="@+id/fab_cart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@android:drawable/ic_dialog_email" />
+            android:clickable="true"
+            android:onClick="@{productsViewModel::fabClicked}"
+            android:src="@drawable/cart" />
+
+
     </RelativeLayout>
 </layout>

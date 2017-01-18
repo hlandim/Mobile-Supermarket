@@ -4,7 +4,7 @@
     android:id="@+id/activity_main2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.com.hlandim.supermarket.home.HomeActivity">
+    tools:context=".page.home.HomeActivity">
 
     <LinearLayout
         android:id="@+id/container_home_fragment"
@@ -13,9 +13,13 @@
         android:orientation="vertical" />
 
     <LinearLayout
-        android:id="@+id/container_details_fragment"
+        android:id="@+id/container_fragment_2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" />
+
+    <include layout="@layout/loading_overlay"
+        android:visibility="gone"
+        android:id="@+id/container_loading"/>
 
 </RelativeLayout>

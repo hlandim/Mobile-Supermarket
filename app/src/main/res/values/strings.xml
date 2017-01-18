@@ -12,7 +12,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_filter">Filtrar</string>
 
     <string name="sign_up">Create account</string>
     <string name="sign_up_error_email">Email já cadastrado</string>
@@ -26,5 +26,23 @@
 
     <string name="preference_file_key">my_preference</string>
     <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="product_img_transaction">product_img</string>
+
+    <string name="filter_all">Todos</string>
+    <string name="filter_bakery">Padaria</string>
+    <string name="filter_dairy">Laticínios</string>
+    <string name="filter_fruit">Frutas</string>
+    <string name="filter_vegetable">Vegetais</string>
+    <string name="filter_meat">Carnes</string>
+
+    <string name="checkout_total">Total: </string>
+
+    <string name="loading_removing_item">Removendo item...</string>
+    <string name="loading_creating_user">Cadastrand...</string>
+    <string name="loading_sign_in_user">Entrando...</string>
+    <string name="loading_products_list">Obtendo list de produtos...</string>
+    <string name="loading_fetch_cart_items">Obtendo carrinho...</string>
+    <string name="loading_adding_cart_item">Adicionando ao carrinho...</string>
 
 </resources>
