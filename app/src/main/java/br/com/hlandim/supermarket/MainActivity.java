@@ -1,6 +1,8 @@
 package br.com.hlandim.supermarket;
 
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -26,8 +28,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mSignInFragment = new SignInFragment();
-        mSignUpFragment = new SignUpFragment();
+        if (savedInstanceState == null) {
+//            mSignInFragment = (SignInFragment) savedInstanceState.get("sign_in_fragment");
+//            mSignUpFragment = (SignUpFragment) savedInstanceState.get("sign_up_fragment");
+//        } else {
+
+            mSignInFragment = new SignInFragment();
+            mSignUpFragment = new SignUpFragment();
+        }
+
 
         setInitialFragment(savedInstanceState);
 
@@ -36,7 +45,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    /*@Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        outState.putParcelable("sign_in_fragment", (Parcelable) mSignInFragment);
+        outState.putParcelable("sign_up_fragment", (Parcelable) mSignUpFragment);
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+*/
     private void setInitialFragment(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             changeFragment(mSignInFragment, null);

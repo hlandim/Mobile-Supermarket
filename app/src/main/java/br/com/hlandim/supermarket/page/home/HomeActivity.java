@@ -36,7 +36,9 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        changeFragment(new ProductsFragment(), null, R.id.container_home_fragment);
+        if(savedInstanceState == null) {
+            changeFragment(new ProductsFragment(), null, R.id.container_home_fragment);
+        }
 
         mLoadingAnimation = new LoadingAnimation(findViewById(R.id.container_loading));
         mLoadingText = (TextView) findViewById(R.id.tv_loading);

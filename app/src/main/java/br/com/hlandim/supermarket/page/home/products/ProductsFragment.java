@@ -45,6 +45,7 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
     private ProductsViewModel mViewModel;
     private ProductsAdapter mProductsAdapter;
     private AlertDialog mFilterDialog;
+    private List<Product> mProducts;
     private List<CartItem> mCartItems;
 
     @Nullable
@@ -56,7 +57,18 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
         configureRecycleView();
 
         mViewModel = new ProductsViewModel(getActivity(), this);
-        fetchProducts(null);
+
+        if (mProducts == null) {
+            fetchProducts(null);
+        } else {
+            mProductsAdapter = null;
+            mBinding.setProductsViewModel(mViewModel);
+            updateProducts(mProducts);
+        }
+
+        if (mCartItems != null) {
+            mBinding.fabCart.setCount(mCartItems.size());
+        }
 
         setHasOptionsMenu(true);
 
@@ -75,6 +87,7 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
                 .create();
 
 
+        setRetainInstance(true);
         return mBinding.getRoot();
     }
 
@@ -123,7 +136,14 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
 
     @Override
     public void onGotProducts(List<Product> list) {
+        mProducts = list;
         mBinding.setProductsViewModel(mViewModel);
+        updateProducts(list);
+        mViewModel.fetchCartItens();
+//        showProgress(false);
+    }
+
+    private void updateProducts(List<Product> list) {
         if (list != null) {
             if (mProductsAdapter == null) {
                 mProductsAdapter = new ProductsAdapter(list);
@@ -134,8 +154,6 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
                 mProductsAdapter.notifyDataSetChanged();
             }
         }
-        mViewModel.fetchCartItens();
-//        showProgress(false);
     }
 
 
