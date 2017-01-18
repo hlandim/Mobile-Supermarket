@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         changeFragment(mSignUpFragment, PageAnimation.SLIDE_RIGHT_TO_LEFT);
     }
 
-    public void goToSignIn(View v) {
+    private void goToSignIn(View v) {
         changeFragment(mSignInFragment, PageAnimation.SLIDE_LEFT_TO_RIGHT);
     }
 

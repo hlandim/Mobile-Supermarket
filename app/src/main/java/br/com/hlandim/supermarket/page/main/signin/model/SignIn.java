@@ -17,12 +17,6 @@ public class SignIn {
         this.grantType = DEFAULT_GRANT_TYPE;
     }
 
-    public SignIn(String email, String password, String grantType) {
-        this.email = email;
-        this.password = password;
-        this.grantType = grantType;
-    }
-
     public SignIn(String email, String password) {
         this.email = email;
         this.password = password;

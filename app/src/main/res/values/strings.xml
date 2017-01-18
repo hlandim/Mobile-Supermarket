@@ -38,11 +38,12 @@
 
     <string name="checkout_total">Total: </string>
 
-    <string name="loading_removing_item">Removendo item...</string>
-    <string name="loading_creating_user">Cadastrand...</string>
-    <string name="loading_sign_in_user">Entrando...</string>
-    <string name="loading_products_list">Obtendo list de produtos...</string>
-    <string name="loading_fetch_cart_items">Obtendo carrinho...</string>
-    <string name="loading_adding_cart_item">Adicionando ao carrinho...</string>
+    <string name="loading_removing_item">Removendo item&#8230;</string>
+    <string name="loading_creating_user">Cadastrand&#8230;</string>
+    <string name="loading_sign_in_user">Entrando&#8230;</string>
+    <string name="loading_products_list">Obtendo list de produtos&#8230;</string>
+    <string name="loading_fetch_cart_items">Obtendo carrinho&#8230;</string>
+    <string name="loading_adding_cart_item">Adicionando ao carrinho&#8230;</string>
 
+    <string name="add_to_cart">Adicionar ao carrinho</string>
 </resources>

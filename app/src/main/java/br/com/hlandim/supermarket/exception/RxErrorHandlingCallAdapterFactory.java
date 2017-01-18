@@ -37,7 +37,7 @@ public class RxErrorHandlingCallAdapterFactory extends CallAdapter.Factory {
         private final Retrofit retrofit;
         private final CallAdapter<?> wrapped;
 
-        public RxCallAdapterWrapper(Retrofit retrofit, CallAdapter<?> wrapped) {
+        RxCallAdapterWrapper(Retrofit retrofit, CallAdapter<?> wrapped) {
             this.retrofit = retrofit;
             this.wrapped = wrapped;
         }

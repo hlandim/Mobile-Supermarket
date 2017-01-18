@@ -27,8 +27,8 @@ import rx.schedulers.Schedulers;
 public class CartManager extends ContextWrapper {
 
     private static CartManager instance;
-    private CartService service;
-    private SessionManager mSessionManager;
+    private final CartService service;
+    private final SessionManager mSessionManager;
 
     private CartManager(Activity base) {
         super(base);
@@ -56,27 +56,22 @@ public class CartManager extends ContextWrapper {
             service.addToCart(Endpoint.SUFIX_KEY_AUTH + mSessionManager.getToken(), addToCartRequest)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<AddToCartResponse>() {
-                        @Override
-                        public void call(AddToCartResponse addToCartResponse) {
-                            callback.onAddToCartResponse(addToCartResponse.getErrors());
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            try {
-                                RetrofitException error = (RetrofitException) throwable;
-                                AddToCartResponse response = error.getErrorBodyAs(AddToCartResponse.class);
-                                callback.onAddToCartResponse(response.getErrors());
-                            } catch (IOException e1) {
-                                Error error = new Error("", throwable.getMessage());
-                                List<Error> errors = new ArrayList<>();
-                                errors.add(error);
-                                callback.onAddToCartResponse(errors);
-                                e1.printStackTrace();
-                            }
-                        }
-                    });
+                    .subscribe(addToCartResponse ->
+                                    callback.onAddToCartResponse(addToCartResponse.getErrors())
+
+                            , throwable -> {
+                                try {
+                                    RetrofitException error = (RetrofitException) throwable;
+                                    AddToCartResponse response = error.getErrorBodyAs(AddToCartResponse.class);
+                                    callback.onAddToCartResponse(response.getErrors());
+                                } catch (IOException e1) {
+                                    Error error = new Error("", throwable.getMessage());
+                                    List<Error> errors = new ArrayList<>();
+                                    errors.add(error);
+                                    callback.onAddToCartResponse(errors);
+                                    e1.printStackTrace();
+                                }
+                            });
         }
 
     }
@@ -87,27 +82,20 @@ public class CartManager extends ContextWrapper {
             service.listItens(Endpoint.SUFIX_KEY_AUTH + mSessionManager.getToken())
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<List<CartItem>>() {
-                        @Override
-                        public void call(List<CartItem> list) {
-                            callback.onGotItems(list);
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            try {
-                                RetrofitException error = (RetrofitException) throwable;
-                                CartItem response = error.getErrorBodyAs(CartItem.class);
-                                callback.onGotErrors(response.getErrors());
-                            } catch (IOException e1) {
-                                Error error = new Error("", throwable.getMessage());
-                                List<Error> errors = new ArrayList<>();
-                                errors.add(error);
-                                callback.onGotErrors(errors);
-                                e1.printStackTrace();
-                            }
-                        }
-                    });
+                    .subscribe(list -> callback.onGotItems(list)
+                            , throwable -> {
+                                try {
+                                    RetrofitException error = (RetrofitException) throwable;
+                                    CartItem response = error.getErrorBodyAs(CartItem.class);
+                                    callback.onGotErrors(response.getErrors());
+                                } catch (IOException e1) {
+                                    Error error = new Error("", throwable.getMessage());
+                                    List<Error> errors = new ArrayList<>();
+                                    errors.add(error);
+                                    callback.onGotErrors(errors);
+                                    e1.printStackTrace();
+                                }
+                            });
         }
     }
 
@@ -116,14 +104,9 @@ public class CartManager extends ContextWrapper {
             service.deleteItem(Endpoint.SUFIX_KEY_AUTH + mSessionManager.getToken(), cartItem.getId())
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<String>() {
-                        @Override
-                        public void call(String sting) {
-                            callback.onRemoveSuccess();
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
+                    .subscribe(response ->
+                            callback.onRemoveSuccess()
+                    , throwable -> {
                             try {
                                 RetrofitException error = (RetrofitException) throwable;
                                 CartItem response = error.getErrorBodyAs(CartItem.class);
@@ -136,7 +119,7 @@ public class CartManager extends ContextWrapper {
                                 e1.printStackTrace();
                             }
                         }
-                    });
+                    );
         }
     }
 

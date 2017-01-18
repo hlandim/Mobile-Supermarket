@@ -13,15 +13,8 @@ import java.io.UnsupportedEncodingException;
 public class JWTUtils {
 
     public static JwtToken decoded(String JWTEncoded) throws Exception {
-        try {
-            String[] split = JWTEncoded.split("\\.");
-//            Log.d("JWT_DECODED", "Header: " + getJson(split[0]));
-//            Log.d("JWT_DECODED", "Body: " + getJson(split[1]));
-            return new Gson().fromJson(getJson(split[1]), JwtToken.class);
-        } catch (UnsupportedEncodingException e) {
-            //Error
-        }
-        return null;
+        String[] split = JWTEncoded.split("\\.");
+        return new Gson().fromJson(getJson(split[1]), JwtToken.class);
     }
 
     private static String getJson(String strEncoded) throws UnsupportedEncodingException {

@@ -6,10 +6,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 
-import java.util.List;
-
 import br.com.hlandim.supermarket.R;
-import br.com.hlandim.supermarket.data.service.response.Error;
 import br.com.hlandim.supermarket.manager.SessionManager;
 import br.com.hlandim.supermarket.page.home.HomeActivity;
 import br.com.hlandim.supermarket.page.main.signin.model.SignIn;
@@ -70,19 +67,17 @@ public class SignUpViewModel extends ContextWrapper {
     private void signIn(String email, String password) {
         if (mContract != null && mContract.validateFields()) {
             SignIn signIn = new SignIn(email, password);
-            mSessionManager.signIn(signIn, new SessionManager.SignInCallback() {
-                @Override
-                public void onSignInResponse(String error) {
-                    if (TextUtils.isEmpty(error)) {
-                        Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                    } else {
-                        mContract.showProgress(false, null);
-                        Util.getGeneralErrorDialog(getBaseContext(), error).show();
+            mSessionManager.signIn(signIn, error -> {
+                        if (TextUtils.isEmpty(error)) {
+                            Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        } else {
+                            mContract.showProgress(false, null);
+                            Util.getGeneralErrorDialog(getBaseContext(), error).show();
+                        }
                     }
-                }
-            });
+            );
         }
     }
 
@@ -90,17 +85,15 @@ public class SignUpViewModel extends ContextWrapper {
         if (mContract != null && mContract.validateFields()) {
             Util.hideKeyboard((Activity) getBaseContext());
             mContract.showProgress(true, getString(R.string.loading_creating_user));
-            mSessionManager.create(mSignUp, new SessionManager.SignUpCallback() {
-                @Override
-                public void onSignUpResponse(List<Error> errors) {
-                    if (errors == null) {
-                        signIn(mSignUp.getEmail(), mSignUp.getPassword());
-                    } else {
-                        mContract.showProgress(false, null);
-                        mContract.onCreate(errors);
+            mSessionManager.create(mSignUp, errors -> {
+                        if (errors == null) {
+                            signIn(mSignUp.getEmail(), mSignUp.getPassword());
+                        } else {
+                            mContract.showProgress(false, null);
+                            mContract.onCreate(errors);
+                        }
                     }
-                }
-            });
+            );
         }
     }
 }

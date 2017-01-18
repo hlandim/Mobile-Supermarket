@@ -2,7 +2,6 @@ package br.com.hlandim.supermarket.page.home.products;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.graphics.Rect;
@@ -64,17 +63,15 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, ProductFilter.getFilters(getContext()));
         mFilterDialog = new AlertDialog.Builder(getActivity())
                 .setTitle("Selecione o tipo")
-                .setSingleChoiceItems(adapter, 0, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        ProductFilter productFilter = ProductFilter.getFilter(i);
-                        if (productFilter != null) {
-                            String filter = productFilter.name().toLowerCase();
-                            fetchProducts(filter);
+                .setSingleChoiceItems(adapter, 0, (dialogInterface, i) -> {
+                            ProductFilter productFilter = ProductFilter.getFilter(i);
+                            if (productFilter != null) {
+                                String filter = productFilter.name().toLowerCase();
+                                fetchProducts(filter);
+                            }
+                            dialogInterface.dismiss();
                         }
-                        dialogInterface.dismiss();
-                    }
-                })
+                )
                 .create();
 
 

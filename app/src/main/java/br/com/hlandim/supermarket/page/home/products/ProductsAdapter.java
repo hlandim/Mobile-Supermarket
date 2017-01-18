@@ -24,7 +24,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     private List<Product> mProductList;
     private ProductsListListener mListListener;
 
-    public ProductsAdapter(List<Product> mProductList) {
+    ProductsAdapter(List<Product> mProductList) {
         this.mProductList = mProductList;
     }
 
@@ -48,11 +48,11 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         return mProductList.size();
     }
 
-    public void setListListener(ProductsListListener listListener) {
+    void setListListener(ProductsListListener listListener) {
         this.mListListener = listListener;
     }
 
-    public void setProductList(List<Product> productList) {
+    void setProductList(List<Product> productList) {
         this.mProductList = productList;
     }
 
@@ -70,26 +70,22 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
             super(itemView);
             mBinding = DataBindingUtil.bind(itemView);
 
-            mBinding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mListListener != null) {
-                        int position = getLayoutPosition();
-                        Product product = mProductList.get(position);
-                        mListListener.onProductClicked(product, mBinding.productImage);
+            mBinding.getRoot().setOnClickListener(v -> {
+                        if (mListListener != null) {
+                            int position = getLayoutPosition();
+                            Product product = mProductList.get(position);
+                            mListListener.onProductClicked(product, mBinding.productImage);
+                        }
                     }
-                }
-            });
-            mBinding.btnAddToCart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mListListener != null) {
-                        int position = getLayoutPosition();
-                        Product product = mProductList.get(position);
-                        mListListener.onAddToCartClicked(product);
+            );
+            mBinding.btnAddToCart.setOnClickListener(v -> {
+                        if (mListListener != null) {
+                            int position = getLayoutPosition();
+                            Product product = mProductList.get(position);
+                            mListListener.onAddToCartClicked(product);
+                        }
                     }
-                }
-            });
+            );
         }
 
         public ProductListRowBinding getBinding() {

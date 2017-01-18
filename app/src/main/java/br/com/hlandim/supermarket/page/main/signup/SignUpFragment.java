@@ -50,9 +50,7 @@ public class SignUpFragment extends MainBaseFragment implements SignUpViewModelL
 
     @Override
     public void onCreate(List<Error> errors) {
-        if (errors == null) {
-
-        } else {
+        if (errors != null) {
             handleErrors(errors);
         }
     }

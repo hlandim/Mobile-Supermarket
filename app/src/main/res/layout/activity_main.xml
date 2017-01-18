@@ -1,29 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/auth_bg_color"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-
     tools:context="br.com.hlandim.supermarket.MainActivity">
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/container_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin" />
 
-        <LinearLayout
-            android:id="@+id/container_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:orientation="vertical"
-            android:padding="@dimen/activity_horizontal_margin" />
+    <include
+        android:id="@+id/container_loading"
+        layout="@layout/loading_overlay"
+        android:visibility="gone" />
 
-        <include layout="@layout/loading_overlay"
-            android:visibility="gone"
-            android:id="@+id/container_loading"/>
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>

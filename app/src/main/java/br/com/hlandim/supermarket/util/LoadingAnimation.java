@@ -18,10 +18,8 @@ public class LoadingAnimation {
     private LinearLayout mLoadingOverlay;
     private YoYo.YoYoString mLoadingAnimation;
     private ImageView mImgLoading;
-    private View mViewRoot;
 
     public LoadingAnimation(View mViewRoot) {
-        this.mViewRoot = mViewRoot;
         configureLoadingAnimation(mViewRoot);
     }
 

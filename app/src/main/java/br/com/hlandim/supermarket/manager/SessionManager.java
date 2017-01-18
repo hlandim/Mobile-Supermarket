@@ -23,7 +23,6 @@ import br.com.hlandim.supermarket.util.JWTUtils;
 import br.com.hlandim.supermarket.util.JwtToken;
 import br.com.hlandim.supermarket.util.ServerUtil;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -48,6 +47,8 @@ public class SessionManager extends ContextWrapper {
         mService = ServerUtil.getService(SessionService.class, Endpoint.SERVER_AUTH);
         mSharedPreferences = base.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+
     }
 
     public static SessionManager getInstance(Activity base) {
@@ -73,30 +74,22 @@ public class SessionManager extends ContextWrapper {
             mService.signIn(signIn.getEmail(), signIn.getPassword(), signIn.getGrantType())
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<SignInResponse>() {
-                        @Override
-                        public void call(SignInResponse signInResponse) {
-                            try {
-                                setToken(signInResponse.getAccessToken());
-                                saveUserCredentiais(signIn.getEmail(), signIn.getPassword());
-                                signInCallback.onSignInResponse(signInResponse.getError());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                signInCallback.onSignInResponse(e.getMessage());
-                            }
-
+                    .subscribe(signInResponse -> {
+                        try {
+                            setToken(signInResponse.getAccessToken());
+                            saveUserCredentiais(signIn.getEmail(), signIn.getPassword());
+                            signInCallback.onSignInResponse(signInResponse.getError());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            signInCallback.onSignInResponse(e.getMessage());
                         }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            try {
-                                RetrofitException error = (RetrofitException) throwable;
-                                SignInResponse response = error.getErrorBodyAs(SignInResponse.class);
-                                signInCallback.onSignInResponse(response.getError());
-                            } catch (IOException e1) {
-                                signInCallback.onSignInResponse(throwable.getMessage());
-                            }
-
+                    }, throwable -> {
+                        try {
+                            RetrofitException error = (RetrofitException) throwable;
+                            SignInResponse response = error.getErrorBodyAs(SignInResponse.class);
+                            signInCallback.onSignInResponse(response.getErrorDescription());
+                        } catch (IOException e1) {
+                            signInCallback.onSignInResponse(throwable.getMessage());
                         }
                     });
         }
@@ -111,27 +104,20 @@ public class SessionManager extends ContextWrapper {
             mService.createUser(signUp)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<CreateResponse>() {
-                        @Override
-                        public void call(CreateResponse createResponse) {
-                            signUpCallback.onSignUpResponse(createResponse.getErrors());
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                            try {
-                                RetrofitException error = (RetrofitException) throwable;
-                                CreateResponse response = error.getErrorBodyAs(CreateResponse.class);
-                                signUpCallback.onSignUpResponse(response.getErrors());
-                            } catch (IOException e1) {
-                                Error error = new Error("", throwable.getMessage());
-                                List<Error> errors = new ArrayList<>();
-                                errors.add(error);
-                                signUpCallback.onSignUpResponse(errors);
-                                e1.printStackTrace();
-                            }
-                        }
-                    });
+                    .subscribe(createResponse -> signUpCallback.onSignUpResponse(createResponse.getErrors())
+                            , throwable -> {
+                                try {
+                                    RetrofitException error = (RetrofitException) throwable;
+                                    CreateResponse response = error.getErrorBodyAs(CreateResponse.class);
+                                    signUpCallback.onSignUpResponse(response.getErrors());
+                                } catch (IOException e1) {
+                                    Error error = new Error("", throwable.getMessage());
+                                    List<Error> errors = new ArrayList<>();
+                                    errors.add(error);
+                                    signUpCallback.onSignUpResponse(errors);
+                                    e1.printStackTrace();
+                                }
+                            });
         }
     }
 

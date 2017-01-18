@@ -1,7 +1,5 @@
 package br.com.hlandim.supermarket.data.service.response;
 
-import android.text.TextUtils;
-
 /**
  * Created by hlandim on 14/01/17.
  */
@@ -30,10 +28,7 @@ public class SignInResponse {
     }
 
     public String getError() {
-        if (!TextUtils.isEmpty(error_description) && !TextUtils.isEmpty(error)) {
-            return error_description + "\n" + error;
-        }
-        return null;
+        return error;
     }
 
 

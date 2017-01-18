@@ -54,24 +54,22 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.Checko
         void onDeleteCartItemClicked(CartItem cartItem);
     }
 
-    public class CheckoutHolder extends RecyclerView.ViewHolder {
+    class CheckoutHolder extends RecyclerView.ViewHolder {
 
         private CartListRowBinding mBinding;
 
-        public CheckoutHolder(View itemView) {
+        CheckoutHolder(View itemView) {
             super(itemView);
             mBinding = DataBindingUtil.bind(itemView);
 
-            mBinding.btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mListener != null) {
-                        int position = getLayoutPosition();
-                        CartItem cartItem = mCartItems.get(position);
-                        mListener.onDeleteCartItemClicked(cartItem);
+            mBinding.btnDelete.setOnClickListener(v -> {
+                        if (mListener != null) {
+                            int position = getLayoutPosition();
+                            CartItem cartItem = mCartItems.get(position);
+                            mListener.onDeleteCartItemClicked(cartItem);
+                        }
                     }
-                }
-            });
+            );
         }
     }
 }

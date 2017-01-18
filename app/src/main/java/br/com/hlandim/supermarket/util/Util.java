@@ -35,9 +35,8 @@ public class Util {
     }
 
     public static AlertDialog getGeneralErrorDialog(Context context, String body) {
-        AlertDialog alertDialog = new AlertDialog.Builder(context)
+        return new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.general_error_dialog_title))
                 .setMessage(body).create();
-        return alertDialog;
     }
 }

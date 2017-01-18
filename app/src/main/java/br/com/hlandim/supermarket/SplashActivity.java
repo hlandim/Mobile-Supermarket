@@ -27,12 +27,7 @@ public class SplashActivity extends AppCompatActivity {
 
         startAnimation();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                verifyCredentials();
-            }
-        }, 1000);
+        new Handler().postDelayed(() -> verifyCredentials(), 1000);
 
 
     }
@@ -64,20 +59,17 @@ public class SplashActivity extends AppCompatActivity {
 
     private void verifyCredentials() {
         SessionManager sessionManager = SessionManager.getInstance(this);
-        sessionManager.signInWithSavedCrendentials(new SessionManager.SignInCallback() {
-            @Override
-            public void onSignInResponse(String error) {
+        sessionManager.signInWithSavedCrendentials(error -> {
 
-                Class aClass = MainActivity.class;
-                if (TextUtils.isEmpty(error)) {
-                    aClass = HomeActivity.class;
-                }
-
-                Intent intent = new Intent(SplashActivity.this, aClass);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+            Class aClass = MainActivity.class;
+            if (TextUtils.isEmpty(error)) {
+                aClass = HomeActivity.class;
             }
+
+            Intent intent = new Intent(SplashActivity.this, aClass);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 }

@@ -42,11 +42,6 @@ public class HomeActivity extends AppCompatActivity {
         mLoadingText = (TextView) findViewById(R.id.tv_loading);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
-    }
-
     private void changeFragment(Fragment fragment, PageAnimation pageAnimation, int containerId) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 

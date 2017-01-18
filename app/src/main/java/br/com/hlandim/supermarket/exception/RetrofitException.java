@@ -18,7 +18,7 @@ public class RetrofitException extends RuntimeException {
     private final Kind kind;
     private final Retrofit retrofit;
 
-    RetrofitException(String message, String url, Response response, Kind kind, Throwable exception, Retrofit retrofit) {
+    private RetrofitException(String message, String url, Response response, Kind kind, Throwable exception, Retrofit retrofit) {
         super(message, exception);
         this.url = url;
         this.response = response;

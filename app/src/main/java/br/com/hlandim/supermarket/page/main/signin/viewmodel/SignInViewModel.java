@@ -18,6 +18,7 @@ import br.com.hlandim.supermarket.util.Util;
 
 public class SignInViewModel extends ContextWrapper {
 
+
     private SignIn mSignIn;
     private SignInViewModelListener mListener;
     private SessionManager mSessionManager;
@@ -51,19 +52,19 @@ public class SignInViewModel extends ContextWrapper {
             if (mListener.validateFields()) {
                 Util.hideKeyboard((Activity) getBaseContext());
                 mListener.showProgress(true, getString(R.string.loading_sign_in_user));
-                mSessionManager.signIn(mSignIn, new SessionManager.SignInCallback() {
-                    @Override
-                    public void onSignInResponse(String error) {
-                        if (TextUtils.isEmpty(error)) {
-                            Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                        } else {
-                            mListener.showProgress(false);
-                            Util.getGeneralErrorDialog(getBaseContext(), error).show();
+                mSessionManager.signIn(mSignIn, error -> {
+                            if (TextUtils.isEmpty(error)) {
+                                Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                            } else {
+
+                                Util.getErrorSnackbar(v, error).show();
+                                mListener.showProgress(false);
+
+                            }
                         }
-                    }
-                });
+                );
             }
         }
     }
