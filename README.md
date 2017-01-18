@@ -8,7 +8,7 @@
 * Use [Picasso][5] to load images.
 * Use [AwesomeValidation][6] to form validations
 * Use [AndroidViewAnimations][7] to animate view
-* Use [][8] to allows to use Java 8 lambda expressions and reduce the code boilerplate.
+* Use [Retrolambda][8] to allows to use Java 8 lambda expressions and reduce the code boilerplate.
 
 IMAGES
 ---------
