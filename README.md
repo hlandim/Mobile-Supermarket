@@ -10,6 +10,10 @@
 IMAGES
 ---------
 ![alt Sign In](https://github.com/hlandim/Mobile-Supermarket/blob/master/screenshots/0-signIn.png)
+![alt Sign Up](https://github.com/hlandim/Mobile-Supermarket/blob/master/screenshots/1-signUp.png)
+![alt Products list](https://github.com/hlandim/Mobile-Supermarket/blob/master/screenshots/3-products.png)
+![alt Product details](https://github.com/hlandim/Mobile-Supermarket/blob/master/screenshots/4-details.png)
+![alt Cart](https://github.com/hlandim/Mobile-Supermarket/blob/master/screenshots/5-cart.png)
 
 
 
