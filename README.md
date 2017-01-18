@@ -7,6 +7,12 @@
 * Rest API from [Retrofit 2][5]
 * Use [Picasso][5] to load images.
 
+IMAGES
+---------
+![alt Sign In](https://github.com/hlandim/Mobile-Supermarket/blob/master/screenshots/0-signIn.png)
+
+
+
 TODO LIST
 ---------
 
