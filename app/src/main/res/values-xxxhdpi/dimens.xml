@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="product_image_preview_size">250dp</dimen>
+
+    <dimen name="product_details_image_size">300dp</dimen>
+</resources>
