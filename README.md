@@ -21,8 +21,6 @@ Hugo Landim Santos - <hlandim.s@gmail.com>
 <a href="https://www.linkedin.com/in/hlandim">
   Add me to Linkedin
 </a>
-
-Somes tools:
     
 [1]: https://en.wikipedia.org/wiki/Model_View_ViewModel
 [2]: https://developer.android.com/topic/libraries/data-binding/index.html
