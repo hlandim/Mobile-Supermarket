@@ -1,6 +1,7 @@
 package br.com.hlandim.supermarket.page.home.products;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -59,7 +61,7 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
         mViewModel = new ProductsViewModel(getActivity(), this);
 
         if (mProducts == null) {
-            fetchProducts(null);
+            fetchProductsByTytpe(null);
         } else {
             mProductsAdapter = null;
             mBinding.setProductsViewModel(mViewModel);
@@ -79,7 +81,7 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
                             ProductFilter productFilter = ProductFilter.getFilter(i);
                             if (productFilter != null) {
                                 String filter = productFilter.name().toLowerCase();
-                                fetchProducts(filter);
+                                fetchProductsByTytpe(filter);
                             }
                             dialogInterface.dismiss();
                         }
@@ -91,12 +93,21 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
         return mBinding.getRoot();
     }
 
-    private void fetchProducts(String filter) {
+    private void fetchProductsByTytpe(String filter) {
         showProgress(true, getString(R.string.loading_products_list));
         if (TextUtils.isEmpty(filter) || filter.equals(ProductFilter.ALL.name().toLowerCase())) {
-            mViewModel.fetchProducts();
+            mViewModel.fetchProductsByType();
         } else {
-            mViewModel.fetchProducts(filter);
+            mViewModel.fetchProductsByType(filter);
+        }
+    }
+
+    public void fetchProductsByTitle(String title) {
+        showProgress(true, getString(R.string.loading_products_list));
+        if (TextUtils.isEmpty(title)) {
+            mViewModel.fetchProductsByType();
+        } else {
+            mViewModel.fetchProductsByTitle(title);
         }
     }
 
@@ -113,10 +124,21 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
         mBinding.rvProducts.addItemDecoration(decoration);
     }
 
+
+/*
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.home, menu);
-    }
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getActivity().getComponentName()));
+
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

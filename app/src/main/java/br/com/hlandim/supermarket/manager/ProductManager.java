@@ -66,7 +66,7 @@ public class ProductManager extends ContextWrapper {
         return instance;
     }
 
-    public void fetchProducts() {
+    public void fetchProductsByType() {
         if (mListener != null) {
             service.list(Endpoint.SUFIX_KEY_AUTH + mSessionManager.getToken())
                     .subscribeOn(Schedulers.newThread())
@@ -75,9 +75,23 @@ public class ProductManager extends ContextWrapper {
         }
     }
 
-    public void fetchProducts(String filter) {
-        Filter filterObj = new Filter(filter);
-        String filterJson = new Gson().toJson(filterObj);
+    public void fetchProductsByType(String filter) {
+        FilterType filterTypeObj = new FilterType(filter);
+        String filterJson = new Gson().toJson(filterTypeObj);
+        try {
+            filterJson = URLEncoder.encode(filterJson, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        service.listWithFilter(Endpoint.SUFIX_KEY_AUTH + mSessionManager.getToken(), filterJson)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(successAction1, errorAction1);
+    }
+
+    public void fetchProductsByTitle(String title) {
+        FilterTitle filterTypeObj = new FilterTitle(title);
+        String filterJson = new Gson().toJson(filterTypeObj);
         try {
             filterJson = URLEncoder.encode(filterJson, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -99,10 +113,10 @@ public class ProductManager extends ContextWrapper {
         void onGotError(List<Error> errors);
     }
 
-    public class Filter {
+    public class FilterType {
         private String type;
 
-        public Filter(String type) {
+        public FilterType(String type) {
             this.type = type;
         }
 
@@ -112,6 +126,22 @@ public class ProductManager extends ContextWrapper {
 
         public void setType(String type) {
             this.type = type;
+        }
+    }
+
+    public class FilterTitle {
+        private String title;
+
+        public FilterTitle(String title) {
+            this.title = title;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
     }
 

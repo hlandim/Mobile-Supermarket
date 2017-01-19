@@ -55,6 +55,7 @@ public class CheckoutFragment extends HomeBaseFragment implements CheckoutViewMo
             mCheckoutViewModel.updateList(mCartItems);
         }
         setRetainInstance(true);
+        setHasOptionsMenu(false);
         return mBinding.getRoot();
     }
 

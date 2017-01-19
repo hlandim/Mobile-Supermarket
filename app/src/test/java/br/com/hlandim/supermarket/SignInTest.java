@@ -55,7 +55,7 @@ public class SignInTest {
          "email": "hlandim.s+s@gmail.com"
          }
          */
-            
+
         CreateResponse createResponse = new CreateResponse("", "", "", "", null);
         when(mSessionService.createUser(signUp)).thenReturn(Observable.just(createResponse));
 

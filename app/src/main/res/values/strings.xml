@@ -13,6 +13,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_filter">Filtrar</string>
+    <string name="action_logout">Sair</string>
+    <string name="action_search">Nome do produto</string>
 
     <string name="sign_up">Create account</string>
     <string name="sign_up_error_email">Email já cadastrado</string>
@@ -37,6 +39,7 @@
     <string name="filter_meat">Carnes</string>
 
     <string name="checkout_total">Total: </string>
+
 
     <string name="loading_removing_item">Removendo item&#8230;</string>
     <string name="loading_creating_user">Cadastrand&#8230;</string>

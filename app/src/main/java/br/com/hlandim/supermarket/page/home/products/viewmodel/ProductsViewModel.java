@@ -38,8 +38,8 @@ public class ProductsViewModel extends ContextWrapper implements ProductsAdapter
         this.mCartManager = CartManager.getInstance(base);
     }
 
-    public void fetchProducts() {
-        mProductManager.fetchProducts();
+    public void fetchProductsByType() {
+        mProductManager.fetchProductsByType();
     }
 
     public void fetchCartItens() {
@@ -59,9 +59,14 @@ public class ProductsViewModel extends ContextWrapper implements ProductsAdapter
         });
     }
 
-    public void fetchProducts(String filter) {
-        mProductManager.fetchProducts(filter);
+    public void fetchProductsByType(String filter) {
+        mProductManager.fetchProductsByType(filter);
     }
+
+    public void fetchProductsByTitle(String title) {
+        mProductManager.fetchProductsByTitle(title);
+    }
+
 
     @Override
     public void onProductClicked(Product product, ImageView sharedImg) {

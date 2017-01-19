@@ -20,4 +20,5 @@ public interface ProductService {
     @GET("products")
     Observable<List<Product>> listWithFilter(@Header("Authorization") String authorization, @Query(value = "filter", encoded = true) String filter);
 
+
 }

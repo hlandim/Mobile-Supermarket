@@ -1,13 +1,18 @@
 package br.com.hlandim.supermarket.page.home;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.transition.Fade;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,18 +35,64 @@ public class HomeActivity extends AppCompatActivity {
     private LoadingAnimation mLoadingAnimation;
     private TextView mLoadingText;
     private HomeBaseFragment mSecondaryFragment;
+    private ProductsFragment mProductsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        if(savedInstanceState == null) {
-            changeFragment(new ProductsFragment(), null, R.id.container_home_fragment);
+        if (savedInstanceState == null) {
+            mProductsFragment = new ProductsFragment();
+            changeFragment(mProductsFragment, null, R.id.container_home_fragment);
         }
 
         mLoadingAnimation = new LoadingAnimation(findViewById(R.id.container_loading));
         mLoadingText = (TextView) findViewById(R.id.tv_loading);
+
+        handleIntent(getIntent());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.home, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        // Get the search close button image view
+        ImageView closeButton = (ImageView) searchView.findViewById(R.id.search_close_btn);
+        if (closeButton != null) {
+            closeButton.setOnClickListener(v -> {
+                if (mProductsFragment != null) {
+                    mProductsFragment.fetchProductsByTitle(null);
+                    searchView.setIconified(true);
+                }
+            });
+        }
+
+
+        return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            if (mProductsFragment != null) {
+                mProductsFragment.fetchProductsByTitle(query);
+            }
+        }
     }
 
     private void changeFragment(Fragment fragment, PageAnimation pageAnimation, int containerId) {

@@ -41,6 +41,7 @@ public class ProductDetailsFragment extends HomeBaseFragment {
         ProductDetailsViewModel productDetailsViewModel = new ProductDetailsViewModel(getActivity(), mProduct, mProductsViewModelListener);
         mBinding.setProduct(productDetailsViewModel);
         setRetainInstance(true);
+        setHasOptionsMenu(false);
         return mBinding.getRoot();
     }
 
