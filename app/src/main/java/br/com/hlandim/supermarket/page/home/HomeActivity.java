@@ -36,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
     private TextView mLoadingText;
     private HomeBaseFragment mSecondaryFragment;
     private ProductsFragment mProductsFragment;
+    private boolean mHideMenu = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,12 @@ public class HomeActivity extends AppCompatActivity {
                     searchView.setIconified(true);
                 }
             });
+
+
+            if (mHideMenu) {
+                for (int i = 0; i < menu.size(); i++)
+                    menu.getItem(i).setVisible(false);
+            }
         }
 
 
@@ -157,6 +164,12 @@ public class HomeActivity extends AppCompatActivity {
     private void removeSecondaryFragment() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.remove(mSecondaryFragment).commit();
+        setHideMenu(false);
         showLoadingOverlay(false);
+    }
+
+    public void setHideMenu(boolean hideMenu) {
+        this.mHideMenu = hideMenu;
+        invalidateOptionsMenu();
     }
 }

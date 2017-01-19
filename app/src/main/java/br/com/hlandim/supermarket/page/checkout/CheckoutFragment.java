@@ -17,6 +17,7 @@ import br.com.hlandim.supermarket.databinding.FragmentCheckoutBinding;
 import br.com.hlandim.supermarket.page.checkout.adapter.CheckoutAdapter;
 import br.com.hlandim.supermarket.page.checkout.viewmodel.CheckoutViewModel;
 import br.com.hlandim.supermarket.page.checkout.viewmodel.CheckoutViewModelListener;
+import br.com.hlandim.supermarket.page.home.HomeActivity;
 import br.com.hlandim.supermarket.page.home.HomeBaseFragment;
 import br.com.hlandim.supermarket.page.home.products.viewmodel.ProductsViewModelListener;
 import br.com.hlandim.supermarket.util.Util;
@@ -56,6 +57,7 @@ public class CheckoutFragment extends HomeBaseFragment implements CheckoutViewMo
         }
         setRetainInstance(true);
         setHasOptionsMenu(false);
+        ((HomeActivity) getActivity()).setHideMenu(true);
         return mBinding.getRoot();
     }
 

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import br.com.hlandim.supermarket.R;
 import br.com.hlandim.supermarket.data.service.response.Product;
 import br.com.hlandim.supermarket.databinding.FragmentProductDetailsBinding;
+import br.com.hlandim.supermarket.page.home.HomeActivity;
 import br.com.hlandim.supermarket.page.home.HomeBaseFragment;
 import br.com.hlandim.supermarket.page.home.products.viewmodel.ProductDetailsViewModel;
 import br.com.hlandim.supermarket.page.home.products.viewmodel.ProductDetailsViewModelListener;
@@ -31,6 +32,7 @@ public class ProductDetailsFragment extends HomeBaseFragment {
         fragment.mProduct = product;
         fragment.mProductsViewModelListener = productsViewModelListener;
         fragment.bitmap = bitmap;
+
         return fragment;
     }
 
@@ -42,6 +44,7 @@ public class ProductDetailsFragment extends HomeBaseFragment {
         mBinding.setProduct(productDetailsViewModel);
         setRetainInstance(true);
         setHasOptionsMenu(false);
+        ((HomeActivity) getActivity()).setHideMenu(true);
         return mBinding.getRoot();
     }
 

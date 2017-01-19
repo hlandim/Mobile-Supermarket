@@ -72,8 +72,6 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
             mBinding.fabCart.setCount(mCartItems.size());
         }
 
-        setHasOptionsMenu(true);
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, ProductFilter.getFilters(getContext()));
         mFilterDialog = new AlertDialog.Builder(getActivity())
                 .setTitle("Selecione o tipo")
@@ -90,6 +88,8 @@ public class ProductsFragment extends HomeBaseFragment implements ProductsViewMo
 
 
         setRetainInstance(true);
+        setHasOptionsMenu(true);
+        ((HomeActivity) getActivity()).setHideMenu(false);
         return mBinding.getRoot();
     }
 
