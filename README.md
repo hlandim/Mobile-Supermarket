@@ -6,8 +6,9 @@
 * Asynchronous communications implemented with [Rx][4].
 * Rest API from [Retrofit 2][5]
 * Use [Picasso][5] to load images.
-* User [AwesomeValidation][6] to form validations
-* User [AndroidViewAnimations][7] to animate view
+* Use [AwesomeValidation][6] to form validations
+* Use [AndroidViewAnimations][7] to animate view
+* Use [Retrolambda][8] to allows to use Java 8 lambda expressions and reduce the code boilerplate.
 
 IMAGES
 ---------
@@ -41,3 +42,4 @@ Hugo Landim Santos - <hlandim.s@gmail.com>
 [5]: https://github.com/square/picasso
 [6]: https://github.com/thyrlian/AwesomeValidation
 [7]: https://github.com/daimajia/AndroidViewAnimations
+[8]: https://github.com/orfjackal/retrolambda
