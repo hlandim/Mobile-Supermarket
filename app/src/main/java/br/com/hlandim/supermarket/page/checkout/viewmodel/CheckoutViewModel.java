@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContextWrapper;
 
 import java.util.List;
+import java.util.Locale;
 
 import br.com.hlandim.supermarket.R;
 import br.com.hlandim.supermarket.data.service.response.CartItem;
@@ -49,7 +50,8 @@ public class CheckoutViewModel extends ContextWrapper implements CheckoutAdapter
         for (CartItem cartItem : list) {
             total += cartItem.getProductPrice();
         }
-        setTotalPrice("$" + total);
+        String totalPrice = String.format(Locale.getDefault(), "%.2f", total);
+        setTotalPrice("$" + totalPrice);
         mListener.onGotCartItems(list);
     }
 

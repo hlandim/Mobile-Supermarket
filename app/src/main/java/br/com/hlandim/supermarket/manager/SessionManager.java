@@ -79,8 +79,8 @@ public class SessionManager extends ContextWrapper {
             Scheduler scheduler = Schedulers.newThread();
             mService.signIn(signIn.getEmail(), signIn.getPassword(), signIn.getGrantType())
                     .subscribeOn(scheduler)
-                    .unsubscribeOn(scheduler)
                     .observeOn(AndroidSchedulers.mainThread())
+                    .unsubscribeOn(scheduler)
                     .subscribe(signInResponse -> {
                         try {
                             setToken(signInResponse.getAccessToken());
