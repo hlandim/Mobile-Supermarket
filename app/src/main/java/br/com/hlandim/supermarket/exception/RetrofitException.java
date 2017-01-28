@@ -75,7 +75,7 @@ public class RetrofitException extends RuntimeException {
      */
     public <T> T getErrorBodyAs(Class<T> type) throws IOException {
         if (response == null || response.errorBody() == null) {
-            return null;
+            throw new IOException("no response body");
         }
         Converter<ResponseBody, T> converter = retrofit.responseBodyConverter(type, new Annotation[0]);
         return converter.convert(response.errorBody());

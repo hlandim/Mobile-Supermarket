@@ -16,8 +16,9 @@ import br.com.hlandim.supermarket.data.service.response.Error;
 import br.com.hlandim.supermarket.data.service.response.Product;
 import br.com.hlandim.supermarket.exception.RetrofitException;
 import br.com.hlandim.supermarket.util.ServerUtil;
+import rx.Observer;
+import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -30,15 +31,15 @@ public class ProductManager extends ContextWrapper {
     private ProductService service;
     private SessionManager mSessionManager;
     private ProductManagerListener mListener;
-    private Action1<List<Product>> successAction1 = new Action1<List<Product>>() {
+
+    private Observer<List<Product>> observerProduct = new Observer<List<Product>>() {
         @Override
-        public void call(List<Product> products) {
-            mListener.onGotProducts(products);
+        public void onCompleted() {
+
         }
-    };
-    private Action1<Throwable> errorAction1 = new Action1<Throwable>() {
+
         @Override
-        public void call(Throwable throwable) {
+        public void onError(Throwable throwable) {
             try {
                 RetrofitException error = (RetrofitException) throwable;
                 Product response = error.getErrorBodyAs(Product.class);
@@ -51,11 +52,16 @@ public class ProductManager extends ContextWrapper {
                 e1.printStackTrace();
             }
         }
+
+        @Override
+        public void onNext(List<Product> products) {
+            mListener.onGotProducts(products);
+        }
     };
 
     private ProductManager(Activity base) {
         super(base);
-        service = ServerUtil.getService(ProductService.class, Endpoint.SERVER_DATA);
+        service = ServerUtil.getService(ProductService.class, Endpoint.SERVER_DATA, base);
         mSessionManager = SessionManager.getInstance(base);
     }
 
@@ -68,10 +74,12 @@ public class ProductManager extends ContextWrapper {
 
     public void fetchProductsByType() {
         if (mListener != null) {
+            Scheduler scheduler = Schedulers.newThread();
             service.list(Endpoint.SUFIX_KEY_AUTH + mSessionManager.getToken())
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(scheduler)
+                    .unsubscribeOn(scheduler)
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(successAction1, errorAction1);
+                    .subscribe(observerProduct);
         }
     }
 
@@ -83,10 +91,12 @@ public class ProductManager extends ContextWrapper {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        Scheduler scheduler = Schedulers.newThread();
         service.listWithFilter(Endpoint.SUFIX_KEY_AUTH + mSessionManager.getToken(), filterJson)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(scheduler)
+                .unsubscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(successAction1, errorAction1);
+                .subscribe(observerProduct);
     }
 
     public void fetchProductsByTitle(String title) {
@@ -97,10 +107,12 @@ public class ProductManager extends ContextWrapper {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        Scheduler scheduler = Schedulers.newThread();
         service.listWithFilter(Endpoint.SUFIX_KEY_AUTH + mSessionManager.getToken(), filterJson)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(scheduler)
+                .unsubscribeOn(scheduler)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(successAction1, errorAction1);
+                .subscribe(observerProduct);
     }
 
     public void setListener(ProductManagerListener listener) {

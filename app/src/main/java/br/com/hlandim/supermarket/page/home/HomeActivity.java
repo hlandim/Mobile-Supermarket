@@ -8,16 +8,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.transition.Fade;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
+import br.com.hlandim.supermarket.BaseActivity;
 import br.com.hlandim.supermarket.R;
 import br.com.hlandim.supermarket.data.service.response.CartItem;
 import br.com.hlandim.supermarket.data.service.response.Product;
@@ -29,7 +31,7 @@ import br.com.hlandim.supermarket.util.DetailsTransition;
 import br.com.hlandim.supermarket.util.LoadingAnimation;
 import br.com.hlandim.supermarket.util.PageAnimation;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends BaseActivity {
 
     private static final String TAG_FRAGMENT = "my_fragment_tag";
     private LoadingAnimation mLoadingAnimation;
@@ -63,7 +65,7 @@ public class HomeActivity extends AppCompatActivity {
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
         // Get the search close button image view
@@ -78,8 +80,13 @@ public class HomeActivity extends AppCompatActivity {
 
 
             if (mHideMenu) {
-                for (int i = 0; i < menu.size(); i++)
-                    menu.getItem(i).setVisible(false);
+                for (int i = 0; i < menu.size(); i++) {
+                    MenuItem menuItem = menu.getItem(i);
+                    menuItem.setVisible(false);
+                    if (menuItem.getItemId() == R.id.action_search) {
+                        MenuItemCompat.collapseActionView(menuItem);
+                    }
+                }
             }
         }
 
@@ -171,5 +178,18 @@ public class HomeActivity extends AppCompatActivity {
     public void setHideMenu(boolean hideMenu) {
         this.mHideMenu = hideMenu;
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onNoConnectionReceived() {
+        super.onNoConnectionReceived();
+        showLoadingOverlay(true, "Sem conexão! :(");
+    }
+
+
+    @Override
+    public void onConnectionRestored() {
+        super.onConnectionRestored();
+        showLoadingOverlay(false);
     }
 }

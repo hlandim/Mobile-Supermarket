@@ -1,11 +1,8 @@
 package br.com.hlandim.supermarket;
 
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,7 +11,7 @@ import br.com.hlandim.supermarket.page.main.signup.SignUpFragment;
 import br.com.hlandim.supermarket.util.LoadingAnimation;
 import br.com.hlandim.supermarket.util.PageAnimation;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG_FRAGMENT = "my_fragment_tag";
     private SignUpFragment mSignUpFragment;
@@ -101,6 +98,18 @@ public class MainActivity extends AppCompatActivity {
     public void showLoadingOverlay(boolean show, String text) {
         mTvLoading.setText(text);
         mLoadingAnimation.showLoadingOverlay(show);
+    }
+
+    @Override
+    public void onNoConnectionReceived() {
+        super.onNoConnectionReceived();
+        showLoadingOverlay(true, "Sem conexão! :(");
+    }
+
+    @Override
+    public void onConnectionRestored() {
+        super.onConnectionRestored();
+        showLoadingOverlay(false);
     }
 }
 

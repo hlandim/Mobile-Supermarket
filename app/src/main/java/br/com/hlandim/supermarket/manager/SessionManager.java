@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.SharedPreferences;
+import android.databinding.tool.util.L;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,8 +24,11 @@ import br.com.hlandim.supermarket.page.main.signup.model.SignUp;
 import br.com.hlandim.supermarket.util.JWTUtils;
 import br.com.hlandim.supermarket.util.JwtToken;
 import br.com.hlandim.supermarket.util.ServerUtil;
+import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by hlandim on 14/01/17.
@@ -44,7 +49,7 @@ public class SessionManager extends ContextWrapper {
 
     private SessionManager(Context base) {
         super(base);
-        mService = ServerUtil.getService(SessionService.class, Endpoint.SERVER_AUTH);
+        mService = ServerUtil.getService(SessionService.class, Endpoint.SERVER_AUTH, base);
         mSharedPreferences = base.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
@@ -71,8 +76,10 @@ public class SessionManager extends ContextWrapper {
 
     public void signIn(final SignIn signIn, final SignInCallback signInCallback) {
         if (signInCallback != null) {
+            Scheduler scheduler = Schedulers.newThread();
             mService.signIn(signIn.getEmail(), signIn.getPassword(), signIn.getGrantType())
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(scheduler)
+                    .unsubscribeOn(scheduler)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(signInResponse -> {
                         try {
@@ -101,8 +108,10 @@ public class SessionManager extends ContextWrapper {
 
     public void create(SignUp signUp, final SignUpCallback signUpCallback) {
         if (signUpCallback != null) {
+            Scheduler scheduler = Schedulers.newThread();
             mService.createUser(signUp)
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(scheduler)
+                    .unsubscribeOn(scheduler)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(createResponse -> signUpCallback.onSignUpResponse(createResponse.getErrors())
                             , throwable -> {

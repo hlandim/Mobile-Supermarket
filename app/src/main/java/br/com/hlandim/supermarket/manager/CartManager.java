@@ -16,8 +16,8 @@ import br.com.hlandim.supermarket.data.service.response.Error;
 import br.com.hlandim.supermarket.data.service.response.Product;
 import br.com.hlandim.supermarket.exception.RetrofitException;
 import br.com.hlandim.supermarket.util.ServerUtil;
+import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -32,7 +32,7 @@ public class CartManager extends ContextWrapper {
 
     private CartManager(Activity base) {
         super(base);
-        service = ServerUtil.getService(CartService.class, Endpoint.SERVER_DATA);
+        service = ServerUtil.getService(CartService.class, Endpoint.SERVER_DATA, base);
         mSessionManager = SessionManager.getInstance(base);
     }
 
@@ -53,8 +53,10 @@ public class CartManager extends ContextWrapper {
                     mSessionManager.getJwtToken().getSub(),
                     product.getPrice());
 
+            Scheduler scheduler = Schedulers.newThread();
             service.addToCart(Endpoint.SUFIX_KEY_AUTH + mSessionManager.getToken(), addToCartRequest)
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(scheduler)
+                    .unsubscribeOn(scheduler)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(addToCartResponse ->
                                     callback.onAddToCartResponse(addToCartResponse.getErrors())
@@ -79,8 +81,10 @@ public class CartManager extends ContextWrapper {
     public void listItems(final ListItemsCallback callback) {
         if (callback != null) {
 
+            Scheduler scheduler = Schedulers.newThread();
             service.listItens(Endpoint.SUFIX_KEY_AUTH + mSessionManager.getToken())
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(scheduler)
+                    .unsubscribeOn(scheduler)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(list -> callback.onGotItems(list)
                             , throwable -> {
@@ -101,24 +105,26 @@ public class CartManager extends ContextWrapper {
 
     public void removeItem(CartItem cartItem, final RemoveItemCallback callback) {
         if (callback != null) {
+            Scheduler scheduler = Schedulers.newThread();
             service.deleteItem(Endpoint.SUFIX_KEY_AUTH + mSessionManager.getToken(), cartItem.getId())
-                    .subscribeOn(Schedulers.newThread())
+                    .subscribeOn(scheduler)
+                    .unsubscribeOn(scheduler)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(response ->
-                            callback.onRemoveSuccess()
-                    , throwable -> {
-                            try {
-                                RetrofitException error = (RetrofitException) throwable;
-                                CartItem response = error.getErrorBodyAs(CartItem.class);
-                                callback.onGoError(response.getErrors());
-                            } catch (IOException e1) {
-                                Error error = new Error("", throwable.getMessage());
-                                List<Error> errors = new ArrayList<>();
-                                errors.add(error);
-                                callback.onGoError(errors);
-                                e1.printStackTrace();
+                                    callback.onRemoveSuccess()
+                            , throwable -> {
+                                try {
+                                    RetrofitException error = (RetrofitException) throwable;
+                                    CartItem response = error.getErrorBodyAs(CartItem.class);
+                                    callback.onGoError(response.getErrors());
+                                } catch (IOException e1) {
+                                    Error error = new Error("", throwable.getMessage());
+                                    List<Error> errors = new ArrayList<>();
+                                    errors.add(error);
+                                    callback.onGoError(errors);
+                                    e1.printStackTrace();
+                                }
                             }
-                        }
                     );
         }
     }
