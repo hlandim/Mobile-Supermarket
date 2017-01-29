@@ -63,7 +63,7 @@ public class SessionManager extends ContextWrapper {
         return instance;
     }
 
-    public void signInWithSavedCrendentials(SignInCallback signInCallback) {
+    public void signInWithSavedCredentials(SignInCallback signInCallback) {
         String email = mSharedPreferences.getString(SHARED_PREFERENCES_EMAIL_KEY, null);
         String password = mSharedPreferences.getString(SHARED_PREFERENCES_PASSWORD_KEY, null);
         if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {

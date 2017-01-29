@@ -72,7 +72,7 @@ public class SplashActivity extends BaseActivity {
 
     private void verifyCredentials() {
         SessionManager sessionManager = SessionManager.getInstance(this);
-        sessionManager.signInWithSavedCrendentials(error -> {
+        sessionManager.signInWithSavedCredentials(error -> {
 
             Class aClass = MainActivity.class;
             if (TextUtils.isEmpty(error)) {

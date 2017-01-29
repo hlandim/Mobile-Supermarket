@@ -8,16 +8,22 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import br.com.hlandim.supermarket.data.service.SessionService;
 import br.com.hlandim.supermarket.data.service.response.CreateResponse;
 import br.com.hlandim.supermarket.manager.SessionManager;
+import br.com.hlandim.supermarket.page.main.signin.model.SignIn;
 import br.com.hlandim.supermarket.page.main.signup.model.SignUp;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -26,6 +32,9 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SignInTest {
+    private static final String EMAIL = "teste@gmail.com";
+    private static final String PASSWORD = "teste123";
+    private static final String TOKEN = "testeToken123soad123sdj";
 
     @Mock
     Context mMockContext;
@@ -42,9 +51,7 @@ public class SignInTest {
     @Test
     public void shouldCreateUser() {
 
-        long uniquePrefix = new Date().getTime();
-        String password = "test123";
-        SignUp signUp = new SignUp("Test Name", "teste" + uniquePrefix + "@gmail.com", password, password);
+        SignUp signUp = new SignUp("Test Name", EMAIL, PASSWORD, PASSWORD);
 
         /**
          * {
@@ -71,6 +78,50 @@ public class SignInTest {
 
     @Test
     public void shouldSignInSuccess() {
+        SignIn signIn = new SignIn(EMAIL, PASSWORD);
+        String response = null;
+        doAnswer(invocation -> {
+            ((SessionManager.SignInCallback) invocation.getArguments()[0]).onSignInResponse(response);
+            return null;
+        })
+                .when(mSessionManager).signIn(eq(signIn), any(SessionManager.SignInCallback.class));
+
+        mSessionManager.signIn(eq(signIn), any(SessionManager.SignInCallback.class));
+
+// Verify state and interaction
+        verify(mSessionManager, times(1)).signIn(
+                eq(signIn), any(SessionManager.SignInCallback.class));
+
+        assertNull(mSessionManager.getToken());
+
+        /*SignInResponse signInResponse = new SignInResponse(TOKEN);
+        SignIn signIn = new SignIn(EMAIL, PASSWORD);
+        when(mSessionService.signIn(signIn.getEmail(), signIn.getPassword(), signIn.getGrantType()))
+                .thenReturn(Observable.just(signInResponse));
+
+        Observable<SignInResponse> signInResponseObservable = mSessionService.signIn(signIn.getEmail(), signIn.getPassword(), signIn.getGrantType());
+        TestSubscriber<SignInResponse> testSubscriber = new TestSubscriber<>();
+        signInResponseObservable.subscribe(testSubscriber);
+
+        testSubscriber.assertNoErrors();
+        List<SignInResponse> responses = new ArrayList<>();
+        responses.add(signInResponse);
+        testSubscriber.assertReceivedOnNext(responses);*/
 
     }
+
+    /*@Test
+    public void shouldSignInWithSavedToken() {
+        SignInResponse signInResponse = new SignInResponse(TOKEN);
+        SignIn signIn = new SignIn(EMAIL, PASSWORD);
+//        when(mSessionManager.signInWithSavedCredentials(any(SessionManager.SignInCallback.class))).thenAnswer(new Answer<String>() {
+//        });
+
+        doAnswer(invocation -> {
+            ((SessionManager.SignInCallback) invocation.getArguments()[0]).onSignInResponse(null);
+            return null;
+        }).when(mSessionManager).signInWithSavedCredentials(any(SessionManager.SignInCallback.class));
+
+
+    }*/
 }
